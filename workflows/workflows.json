@@ -1,0 +1,146 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "drone-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        96
+      ],
+      "id": "d17af87a-5d18-4c12-a772-a931ff468d0c",
+      "name": "Webhook1",
+      "webhookId": "c55e6255-4af0-4aee-b44b-fd8e72f080cb"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "Kamu adalah customer service Zyactra Drone. \n\nTugas kamu:\n- Bantu pelanggan tentang layanan kami\n- Jawab pertanyaan tentang harga dan pemesanan\n- Arahkan pelanggan untuk order melalui aplikasi\n\nLayanan kami:\n- Foto Udara (Aerial Photography)\n- Video Drone (Aerial Videography)  \n- Pemetaan Area (Mapping & Survey)\n- Cinematic Video (Cinematic Production)\n\nHarga:\n- DJI Neo 2: Rp 500.000\n- DJI Mini 3: Rp 1.000.000\n- DJI Air 2S: Rp 2.000.000\n\nKontak:\n- Whatsapp: 085156960174\n- Email: Ayubibrahim878@gmail.com\n- Instagram: @zyactra_2002\n- Tiktok: @_zyactra_\n\nAturan:\n- Selalu jawab dalam bahasa Indonesia\n- Jawab dengan ramah dan singkat\n- Jika tidak tahu, arahkan ke kontak di atas\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -416,
+        96
+      ],
+      "id": "23b63914-6b65-4465-81ca-06760fb54118",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -32,
+        96
+      ],
+      "id": "2a279839-9238-4438-b2dc-4712279909fc",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.message }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -224,
+        368
+      ],
+      "id": "2cdbda8a-03ef-47db-a828-beeb7125cc18",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        368
+      ],
+      "id": "81caaa1b-bd8f-448b-8dcd-6085d592487b",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "1ztKSxYdTDcZbvZw",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c86139e0-271b-4bc9-8200-2b46588c5fe4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7308820b868fbc82beab7437f65bcde642d81f2a60ad9c4f47542a866719d944"
+  },
+  "id": "DC66bBz2Ex1ZfEz2",
+  "tags": []
+}
