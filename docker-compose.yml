@@ -1,10 +1,15 @@
-FROM n8nio/n8n:latest
+version: '3.8'
 
-COPY ./workflow.json /workflow.json
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
 
-ENV N8N_HOST=0.0.0.0
-ENV N8N_PORT=5678
+    ports:
+      - "5678:5678"
 
-EXPOSE 5678
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+      - ./workflow:/workflow
 
-CMD sh -c "n8n import:workflow --input=/workflow.json && n8n start"
+    restart: always
